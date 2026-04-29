@@ -25,7 +25,7 @@ const SWATCH_COLORS = [
 // ============================================================
 // СОСТОЯНИЕ
 // ============================================================
-let supabase = null;
+let sb = null;
 let currentUser = null;
 let activeTab = 'board';
 let filters = { search: '', mine: false, priority: '', category: '' };
@@ -53,7 +53,7 @@ function initSupabase() {
     return false;
   }
   try {
-    supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY, {
+    sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY, {
       auth: { persistSession: false }   // мы используем свою авторизацию, Supabase Auth не нужен
     });
     return true;
@@ -87,7 +87,7 @@ function setSyncStatus(state) {
 // АВТОРИЗАЦИЯ ЧЕРЕЗ ТАБЛИЦУ users
 // ============================================================
 async function tryLogin(login, password) {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('users')
     .select('*')
     .eq('login', login)
@@ -104,7 +104,7 @@ async function tryLogin(login, password) {
 async function restoreSession() {
   const uid = sessionStorage.getItem(SESSION_KEY);
   if (!uid) return false;
-  const { data } = await supabase.from('users').select('*').eq('id', uid).maybeSingle();
+  const { data } = await sb.from('users').select('*').eq('id', uid).maybeSingle();
   if (!data) { sessionStorage.removeItem(SESSION_KEY); return false; }
   currentUser = data;
   return true;
@@ -124,11 +124,11 @@ function logout() {
 // ============================================================
 async function loadAllData() {
   const [usersRes, catsRes, tasksRes, archiveRes, metaRes] = await Promise.all([
-    supabase.from('users').select('*'),
-    supabase.from('categories').select('*'),
-    supabase.from('tasks').select('*'),
-    supabase.from('archive').select('*'),
-    supabase.from('meta').select('*').eq('id', 1).maybeSingle()
+    sb.from('users').select('*'),
+    sb.from('categories').select('*'),
+    sb.from('tasks').select('*'),
+    sb.from('archive').select('*'),
+    sb.from('meta').select('*').eq('id', 1).maybeSingle()
   ]);
 
   for (const r of [usersRes, catsRes, tasksRes, archiveRes]) {
@@ -187,7 +187,7 @@ function subscribeRealtime() {
   if (realtimeChannel) return;
   setSyncStatus('connecting');
 
-  realtimeChannel = supabase.channel('kanban-changes')
+  realtimeChannel = sb.channel('kanban-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' },     handleTaskChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'archive' },   handleArchiveChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' },handleCategoryChange)
@@ -200,7 +200,7 @@ function subscribeRealtime() {
 
 function unsubscribeRealtime() {
   if (realtimeChannel) {
-    supabase.removeChannel(realtimeChannel);
+    sb.removeChannel(realtimeChannel);
     realtimeChannel = null;
   }
   setSyncStatus('offline');
@@ -279,10 +279,10 @@ async function runMonthlyMaintenance() {
       ...toDbTask(t),
       archived_at: new Date().toISOString()
     }));
-    const { error: archErr } = await supabase.from('archive').insert(archiveRows);
+    const { error: archErr } = await sb.from('archive').insert(archiveRows);
     if (!archErr) {
       const ids = doneTasks.map(t => t.id);
-      await supabase.from('tasks').delete().in('id', ids);
+      await sb.from('tasks').delete().in('id', ids);
     }
   }
 
@@ -309,10 +309,10 @@ async function runMonthlyMaintenance() {
       });
     }
   }
-  if (toInsert.length) await supabase.from('tasks').insert(toInsert);
+  if (toInsert.length) await sb.from('tasks').insert(toInsert);
 
   // 3. Обновляем метку
-  await supabase.from('meta').upsert({ id: 1, last_monthly_check: todayStr });
+  await sb.from('meta').upsert({ id: 1, last_monthly_check: todayStr });
   cache.meta.last_monthly_check = todayStr;
 
   if (doneTasks.length || toInsert.length) {
@@ -350,7 +350,7 @@ async function createTask(data) {
   cache.tasks.push(task);
   renderBoard();
 
-  const { error } = await supabase.from('tasks').insert(toDbTask(task));
+  const { error } = await sb.from('tasks').insert(toDbTask(task));
   if (error) {
     cache.tasks = cache.tasks.filter(t => t.id !== id);
     renderBoard();
@@ -378,7 +378,7 @@ async function updateTask(id, patch) {
   if ('deadline' in patch)      dbPatch.deadline = patch.deadline || null;
   if ('repeatMonthly' in patch) dbPatch.repeat_monthly = !!patch.repeatMonthly;
 
-  const { error } = await supabase.from('tasks').update(dbPatch).eq('id', id);
+  const { error } = await sb.from('tasks').update(dbPatch).eq('id', id);
   if (error) {
     cache.tasks[idx] = before;
     renderBoard();
@@ -394,7 +394,7 @@ async function deleteTaskRemote(id) {
   cache.tasks.splice(idx, 1);
   renderBoard();
 
-  const { error } = await supabase.from('tasks').delete().eq('id', id);
+  const { error } = await sb.from('tasks').delete().eq('id', id);
   if (error) {
     cache.tasks.push(before);
     renderBoard();
@@ -420,7 +420,7 @@ async function createCategory(name, color) {
   cache.categories.push(cat);
   renderFiltersOptions();
   renderBoard();
-  const { error } = await supabase.from('categories').insert(cat);
+  const { error } = await sb.from('categories').insert(cat);
   if (error) {
     cache.categories = cache.categories.filter(c => c.id !== id);
     renderFiltersOptions();
@@ -447,9 +447,9 @@ async function restoreFromArchive(taskId) {
   renderArchive();
   renderBoard();
 
-  const { error: insErr } = await supabase.from('tasks').insert(toDbTask(restored));
+  const { error: insErr } = await sb.from('tasks').insert(toDbTask(restored));
   if (insErr) { showToast('Ошибка: не восстановлено'); return; }
-  await supabase.from('archive').delete().eq('id', taskId);
+  await sb.from('archive').delete().eq('id', taskId);
   showToast('Задача восстановлена в «Нужно сделать»');
 }
 
@@ -459,7 +459,7 @@ async function clearArchive() {
   const ids = cache.archive.map(t => t.id);
   cache.archive = [];
   renderArchive();
-  await supabase.from('archive').delete().in('id', ids);
+  await sb.from('archive').delete().in('id', ids);
   showToast('Архив очищен');
 }
 
