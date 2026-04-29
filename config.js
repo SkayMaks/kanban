@@ -1,9 +1,3 @@
-// =====================================================
-// КОНФИГ Supabase
-// =====================================================
-// URL и ключ проекта из Supabase Dashboard
-// Settings → API → Project URL и Project API keys
-// =====================================================
-
+// Supabase config
 window.SUPABASE_URL = 'https://onqyntqocomlccnnluye.supabase.co';
-window.SUPABASE_KEY = 'sb_publishable_V9LXdSrsPQNptf0IrA3i4A_4TDzsnu4';
+window.SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ucXludHFvY29tbGNjbm5sdXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjU5MzUsImV4cCI6MjA5MzA0MTkzNX0.2KfClvIxLCxzLpv6ndtWWTMA_QuGagKuHPbtek6byqA';
