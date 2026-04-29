@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Канбан · Месяц</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ЭКРАН ВХОДА -->
+  <section id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <span class="brand-mark">◐</span>
+        <h1 class="brand-title">Канбан</h1>
+        <p class="brand-sub">месячная доска задач</p>
+      </div>
+      <form id="login-form" class="login-form" autocomplete="off">
+        <label class="field">
+          <span>Логин</span>
+          <input type="text" id="login-input" required autocomplete="username" />
+        </label>
+        <label class="field">
+          <span>Пароль</span>
+          <input type="password" id="password-input" required autocomplete="current-password" />
+        </label>
+        <p id="login-error" class="login-error"></p>
+        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        <div class="login-hint" id="login-hint">
+          <span>Подсказка:</span> admin / admin123 · user / user123
+        </div>
+      </form>
+      <div id="connection-status" class="connection-status"></div>
+    </div>
+  </section>
+
+  <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+  <main id="app" class="app hidden">
+
+    <!-- ШАПКА -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="brand-mark small">◐</span>
+        <div class="title-block">
+          <h2 id="month-title" class="month-title">Месяц</h2>
+          <span class="title-sub">канбан-доска</span>
+        </div>
+        <span id="sync-indicator" class="sync-indicator" title="Real-time подключение">●</span>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="board">Доска</button>
+        <button class="tab" data-tab="archive">Архив</button>
+      </nav>
+
+      <div class="topbar-right">
+        <div id="user-chip" class="user-chip">
+          <span class="user-avatar"></span>
+          <span class="user-name"></span>
+        </div>
+        <button id="theme-toggle" class="icon-btn" title="Сменить тему">
+          <span class="theme-icon"></span>
+        </button>
+        <div class="menu-wrap">
+          <button id="menu-toggle" class="icon-btn" title="Меню">⋯</button>
+          <div id="menu" class="menu hidden">
+            <button data-action="add-category">Добавить категорию</button>
+            <button data-action="export">Выгрузить JSON-копию</button>
+            <button data-action="logout">Выйти</button>
+          </div>
+        </div>
+        <button id="add-task-btn" class="btn btn-primary">+ Задача</button>
+      </div>
+    </header>
+
+    <!-- ПАНЕЛЬ ФИЛЬТРОВ -->
+    <section id="filters" class="filters">
+      <label class="search-field">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Поиск по названию…" />
+      </label>
+
+      <label class="toggle-field">
+        <input type="checkbox" id="filter-mine" />
+        <span class="toggle-track"></span>
+        <span>Только мои</span>
+      </label>
+
+      <div class="select-group">
+        <label>
+          <span class="select-label">Приоритет</span>
+          <select id="filter-priority">
+            <option value="">Все</option>
+            <option value="high">Высокий</option>
+            <option value="medium">Средний</option>
+            <option value="low">Низкий</option>
+          </select>
+        </label>
+        <label>
+          <span class="select-label">Категория</span>
+          <select id="filter-category">
+            <option value="">Все</option>
+          </select>
+        </label>
+      </div>
+
+      <button id="clear-filters" class="link-btn">Сбросить</button>
+    </section>
+
+    <!-- КАНБАН-ДОСКА -->
+    <section id="board-view" class="board-wrap">
+      <div id="board" class="board"></div>
+    </section>
+
+    <!-- АРХИВ -->
+    <section id="archive-view" class="archive-wrap hidden">
+      <div class="archive-head">
+        <h3>Архив выполненных задач</h3>
+        <p>Сюда автоматически попадают задачи из колонки «Готово» в начале нового месяца.</p>
+        <button id="clear-archive" class="link-btn danger">Очистить архив</button>
+      </div>
+      <div id="archive-list" class="archive-list"></div>
+    </section>
+
+  </main>
+
+  <!-- МОДАЛКА: ЗАДАЧА -->
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <header class="modal-head">
+        <h3 id="task-modal-title">Новая задача</h3>
+        <button class="icon-btn" data-close>✕</button>
+      </header>
+      <form id="task-form" class="task-form">
+        <input type="hidden" id="task-id" />
+        <label class="field">
+          <span>Название *</span>
+          <input type="text" id="task-title" required maxlength="120" />
+        </label>
+        <label class="field">
+          <span>Описание</span>
+          <textarea id="task-description" rows="3" maxlength="500"></textarea>
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Приоритет</span>
+            <select id="task-priority">
+              <option value="low">Низкий</option>
+              <option value="medium" selected>Средний</option>
+              <option value="high">Высокий</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Категория</span>
+            <select id="task-category"></select>
+          </label>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span>Дедлайн</span>
+            <input type="date" id="task-deadline" />
+          </label>
+          <label class="field">
+            <span>Статус</span>
+            <select id="task-status">
+              <option value="todo">Нужно сделать</option>
+              <option value="analysis">В анализе</option>
+              <option value="in_progress">В работе</option>
+              <option value="review">Ревью</option>
+              <option value="done">Готово</option>
+            </select>
+          </label>
+        </div>
+        <label class="checkbox-field">
+          <input type="checkbox" id="task-repeat" />
+          <span class="checkmark"></span>
+          <span>Повторять каждый месяц (создаётся 1-го числа)</span>
+        </label>
+        <footer class="modal-foot">
+          <button type="button" id="task-delete" class="btn btn-ghost danger hidden">Удалить</button>
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-ghost" data-close>Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: КАТЕГОРИЯ -->
+  <div id="category-modal" class="modal hidden">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card small">
+      <header class="modal-head">
+        <h3>Новая категория</h3>
+        <button class="icon-btn" data-close>✕</button>
+      </header>
+      <form id="category-form" class="task-form">
+        <label class="field">
+          <span>Название</span>
+          <input type="text" id="category-name" required maxlength="40" />
+        </label>
+        <label class="field">
+          <span>Цвет</span>
+          <div class="color-grid" id="color-grid"></div>
+          <input type="hidden" id="category-color" value="#7c5cff" />
+        </label>
+        <footer class="modal-foot">
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-ghost" data-close>Отмена</button>
+          <button type="submit" class="btn btn-primary">Создать</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Конфиг (вписать свои ключи) -->
+  <script src="config.js"></script>
+  <!-- Логика приложения -->
+  <script src="script.js"></script>
+</body>
+</html>
