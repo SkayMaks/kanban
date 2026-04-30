@@ -10,30 +10,30 @@
   --font-body: 'Manrope', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Светлая тема — кремовая, бумажная */
-  --bg: #f4efe6;
-  --bg-soft: #ebe4d6;
-  --surface: #fbf8f1;
-  --surface-2: #f0eadc;
-  --border: #d9d0bc;
-  --border-strong: #b8ac92;
-  --text: #2a2520;
-  --text-soft: #6b6358;
-  --text-mute: #9a9082;
-  --accent: #8b3a2f;
-  --accent-soft: #c75d3f;
-  --shadow: 0 1px 2px rgba(40, 30, 20, 0.04), 0 8px 24px -8px rgba(40, 30, 20, 0.12);
-  --shadow-lg: 0 12px 40px -8px rgba(40, 30, 20, 0.25);
+  /* Светлая тема — бело-синяя */
+  --bg: #f4f7fb;
+  --bg-soft: #e8eef7;
+  --surface: #ffffff;
+  --surface-2: #eef3fa;
+  --border: #d4dce8;
+  --border-strong: #a8b8d0;
+  --text: #0f1e3d;
+  --text-soft: #4a5878;
+  --text-mute: #8090ad;
+  --accent: #2563eb;
+  --accent-soft: #3b82f6;
+  --shadow: 0 1px 2px rgba(15, 30, 61, 0.04), 0 8px 24px -8px rgba(15, 30, 61, 0.10);
+  --shadow-lg: 0 12px 40px -8px rgba(15, 30, 61, 0.20);
 
-  --priority-high: #c0392b;
-  --priority-medium: #d68910;
-  --priority-low: #6b8e4e;
+  --priority-high: #dc2626;
+  --priority-medium: #d97706;
+  --priority-low: #16a34a;
 
-  --col-todo: #8e7757;
-  --col-analysis: #6b7fa8;
-  --col-progress: #b87333;
-  --col-review: #8e6ba8;
-  --col-done: #4a7c59;
+  --col-todo: #64748b;
+  --col-analysis: #6366f1;
+  --col-progress: #2563eb;
+  --col-review: #8b5cf6;
+  --col-done: #0891b2;
 
   --radius: 6px;
   --radius-lg: 12px;
@@ -41,29 +41,29 @@
 }
 
 [data-theme="dark"] {
-  --bg: #14110d;
-  --bg-soft: #1c1814;
-  --surface: #1f1b16;
-  --surface-2: #28231d;
-  --border: #3a342b;
-  --border-strong: #514a3e;
-  --text: #ebe4d6;
-  --text-soft: #b3a892;
-  --text-mute: #756e60;
-  --accent: #d97757;
-  --accent-soft: #e89571;
+  --bg: #0a1428;
+  --bg-soft: #0f1c38;
+  --surface: #142447;
+  --surface-2: #1a2d57;
+  --border: #233a6b;
+  --border-strong: #3d5a92;
+  --text: #e8eef7;
+  --text-soft: #a8b8d0;
+  --text-mute: #6c7a99;
+  --accent: #60a5fa;
+  --accent-soft: #93c5fd;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 12px 40px -8px rgba(0, 0, 0, 0.7);
 
-  --priority-high: #e74c3c;
-  --priority-medium: #e8a73a;
-  --priority-low: #8fb86b;
+  --priority-high: #ef4444;
+  --priority-medium: #f59e0b;
+  --priority-low: #22c55e;
 
-  --col-todo: #b39866;
-  --col-analysis: #8aa3cf;
-  --col-progress: #d68a4a;
-  --col-review: #b08fc7;
-  --col-done: #6ba87a;
+  --col-todo: #94a3b8;
+  --col-analysis: #818cf8;
+  --col-progress: #60a5fa;
+  --col-review: #a78bfa;
+  --col-done: #22d3ee;
 }
 
 html, body {
@@ -80,14 +80,14 @@ html, body {
 
 body {
   background-image:
-    radial-gradient(circle at 15% 10%, rgba(139, 58, 47, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 15% 10%, rgba(37, 99, 235, 0.04) 0%, transparent 40%),
     radial-gradient(circle at 85% 90%, rgba(107, 142, 78, 0.04) 0%, transparent 40%);
   min-height: 100vh;
 }
 
 [data-theme="dark"] body {
   background-image:
-    radial-gradient(circle at 15% 10%, rgba(217, 119, 87, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 15% 10%, rgba(96, 165, 250, 0.06) 0%, transparent 40%),
     radial-gradient(circle at 85% 90%, rgba(143, 184, 107, 0.04) 0%, transparent 40%);
 }
 
@@ -111,7 +111,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
   inset: 0;
   background-image:
     repeating-linear-gradient(45deg, transparent 0, transparent 60px,
-      rgba(40, 30, 20, 0.015) 60px, rgba(40, 30, 20, 0.015) 120px);
+      rgba(15, 30, 61, 0.015) 60px, rgba(15, 30, 61, 0.015) 120px);
   pointer-events: none;
 }
 
@@ -185,13 +185,13 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 .field select:focus,
 .field textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(139, 58, 47, 0.1);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 [data-theme="dark"] .field input:focus,
 [data-theme="dark"] .field select:focus,
 [data-theme="dark"] .field textarea:focus {
-  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
 }
 
 .field textarea { resize: vertical; min-height: 60px; font-family: inherit; }
@@ -236,7 +236,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 
 .btn-primary {
   background: var(--accent);
-  color: #fbf8f1;
+  color: #ffffff;
 }
 
 .btn-primary:hover { background: var(--accent-soft); transform: translateY(-1px); }
@@ -249,7 +249,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 
 .btn-ghost:hover { background: var(--surface-2); border-color: var(--border-strong); }
 .btn-ghost.danger { color: var(--priority-high); }
-.btn-ghost.danger:hover { background: rgba(192, 57, 43, 0.08); border-color: var(--priority-high); }
+.btn-ghost.danger:hover { background: rgba(220, 38, 38, 0.08); border-color: var(--priority-high); }
 .btn-block { width: 100%; justify-content: center; }
 
 .icon-btn {
@@ -511,9 +511,8 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 
 .board {
   display: grid;
-  grid-template-columns: repeat(5, minmax(260px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 20px;
-  min-width: 1300px;
 }
 
 .column {
@@ -632,7 +631,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
   margin-top: 5px;
 }
 
-.card-priority.high { background: var(--priority-high); box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15); }
+.card-priority.high { background: var(--priority-high); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
 .card-priority.medium { background: var(--priority-medium); }
 .card-priority.low { background: var(--priority-low); }
 
@@ -679,7 +678,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 }
 
 .tag-deadline.overdue {
-  background: rgba(192, 57, 43, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   color: var(--priority-high);
 }
 
@@ -804,7 +803,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(20, 17, 13, 0.55);
+  background: rgba(15, 30, 61, 0.55);
   backdrop-filter: blur(4px);
   animation: fadeIn 200ms ease;
 }
@@ -981,7 +980,31 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 }
 
 /* ========== АДАПТИВ ========== */
-@media (max-width: 900px) {
+
+/* Ноутбук 1280-1440px — компактнее карточки и колонки */
+@media (max-width: 1400px) {
+  .board-wrap { padding: 20px 20px 32px; }
+  .board { gap: 14px; }
+  .column-head { padding: 12px 12px; }
+  .column-title { font-size: 15px; }
+  .column-body { padding: 10px; gap: 8px; }
+  .card { padding: 10px; }
+  .card-title { font-size: 13px; }
+  .card-desc { font-size: 12px; }
+  .filters { padding: 14px 20px; gap: 12px; }
+  .topbar { padding: 14px 20px; gap: 16px; }
+}
+
+/* Планшеты и узкие окна 900-1100px — горизонтальный скролл */
+@media (max-width: 1100px) {
+  .board {
+    grid-template-columns: repeat(5, 240px);
+    min-width: max-content;
+  }
+}
+
+/* Мобила и узкие окна < 768px — колонки в столбик */
+@media (max-width: 768px) {
   .topbar {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
@@ -989,10 +1012,26 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
   }
   .tabs { grid-column: 1 / -1; justify-self: stretch; }
   .tab { flex: 1; text-align: center; }
-  .filters { padding: 12px 16px; }
-  .board-wrap { padding: 16px; }
+  .filters { padding: 12px 16px; flex-direction: column; align-items: stretch; }
+  .filters .search-field { max-width: none; }
+  .filters .select-group { flex-wrap: wrap; }
+  .board-wrap { padding: 12px; overflow-x: visible; }
   .archive-wrap { padding: 16px; }
   .field-row { grid-template-columns: 1fr; }
   .topbar-right .btn { padding: 8px 14px; }
   .user-chip .user-name { display: none; }
+  .month-title { font-size: 18px; }
+
+  /* Главное — колонки в столбик */
+  .board {
+    grid-template-columns: 1fr;
+    min-width: 0;
+    gap: 12px;
+  }
+  .column {
+    max-height: none;
+  }
+  .column-body {
+    max-height: 400px;
+  }
 }
